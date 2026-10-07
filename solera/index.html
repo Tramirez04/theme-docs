@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solera Theme Guide</title>
+<meta name="description" content="Setup guide, wine data reference, FAQ, support and release notes for the Solera Shopify theme by Alaska Digital.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: sticky contents rail on the left, one reading column on the right; stacks on phones. */
+  :root {
+    --bg: #F3F4F0;
+    --surface: #FBFBF8;
+    --fg: #1D2621;
+    --muted: #55615A;
+    --line: #D5DAD3;
+    --wine: #6B1A38;
+    --wine-soft: #F2E4E9;
+    --code-bg: #E8EBE5;
+    --font-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+    --font-body: 'Public Sans', -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151B18; --surface: #1C2420; --fg: #E6EAE5; --muted: #A3AEA7; --line: #313B36;
+      --wine: #E3A3B8; --wine-soft: #3A2129; --code-bg: #26302B; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151B18; --surface: #1C2420; --fg: #E6EAE5; --muted: #A3AEA7; --line: #313B36;
+    --wine: #E3A3B8; --wine-soft: #3A2129; --code-bg: #26302B; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.65 var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--wine); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--wine); outline-offset: 3px; border-radius: 2px; }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 64px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 32px;
+    padding-block: 48px 96px;
+  }
+  .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; max-height: calc(100vh - 48px); overflow-y: auto; }
+  .brand { display: flex; flex-direction: column; gap: 2px; margin-bottom: 28px; }
+  .brand__name { font: 500 30px/1.1 var(--font-display); letter-spacing: -0.01em; }
+  .brand__by { font-size: 13px; color: var(--muted); }
+  .toc { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+  .toc a { display: block; padding: 5px 10px; border-radius: 6px; color: var(--muted); text-decoration: none; }
+  .toc a:hover { color: var(--fg); background: var(--surface); }
+  .toc__group { margin-top: 14px; padding: 0 10px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+  main { min-width: 0; max-width: 760px; }
+  .intro { padding-bottom: 40px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+  .eyebrow { margin: 0 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--wine); }
+  h1 { margin: 0 0 16px; font: 400 clamp(40px, 6vw, 58px)/1.05 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
+  .lede { margin: 0; font-size: 19px; color: var(--muted); max-width: 60ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 20px; font-size: 14px; color: var(--muted); }
+  .meta b { color: var(--fg); font-weight: 600; }
+
+  section { padding-top: 48px; }
+  h2 { margin: 0 0 14px; font: 400 34px/1.15 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
+  h3 { margin: 32px 0 8px; font-size: 18px; font-weight: 600; line-height: 1.35; }
+  p, li { max-width: 68ch; }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--muted); }
+  code, kbd {
+    font: 500 0.88em var(--font-mono);
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .path { font-weight: 600; }
+  .path::after { content: ''; }
+
+  .steps { list-style: none; padding: 0; counter-reset: step; display: flex; flex-direction: column; gap: 14px; }
+  .steps li { counter-increment: step; display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 12px; margin: 0; }
+  .steps li::before {
+    content: counter(step);
+    display: grid; place-items: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--wine); color: var(--wine);
+    font: 500 14px/1 var(--font-body); font-variant-numeric: tabular-nums;
+    margin-top: 1px;
+  }
+
+  .note {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-radius: 8px;
+    background: var(--wine-soft);
+    font-size: 15px;
+  }
+  .note p:last-child { margin-bottom: 0; }
+  .note b { color: var(--wine); }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  td code { white-space: nowrap; }
+
+  .sections-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 0 32px; margin: 8px 0 0; }
+  .sections-list div { padding: 14px 0; border-top: 1px solid var(--line); }
+  .sections-list dt { font-weight: 600; margin-bottom: 4px; }
+  .sections-list dd { margin: 0; color: var(--muted); font-size: 15px; }
+
+  details { border-top: 1px solid var(--line); }
+  details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; padding: 14px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font: 400 22px/1 var(--font-display); color: var(--wine); }
+  details[open] summary::after { content: '–'; }
+  details > div { padding-bottom: 14px; }
+
+  .contact { display: grid; gap: 4px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); margin: 16px 0; }
+  .contact__label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .contact__value { font: 500 20px/1.3 var(--font-display); user-select: all; overflow-wrap: anywhere; }
+  .pending { color: var(--wine); font-style: italic; }
+
+  .release { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .release__v { font: 500 22px/1.2 var(--font-display); }
+  .release__date { font-size: 13px; color: var(--muted); }
+  .release ul { margin-bottom: 0; }
+
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-inline: 18px; padding-block: 28px 72px; }
+    .rail { position: static; max-height: none; overflow: visible; }
+    .toc { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    .toc__group { display: none; }
+    .toc a { border: 1px solid var(--line); background: var(--surface); padding: 4px 10px; font-size: 13px; }
+    .release { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    h2 { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="shell">
+  <aside class="rail" aria-label="Contents">
+    <div class="brand">
+      <span class="brand__name">Solera</span>
+      <span class="brand__by">Theme guide · Alaska Digital</span>
+    </div>
+    <ul class="toc">
+      <li class="toc__group">Start</li>
+      <li><a href="#quick-start">Quick start</a></li>
+      <li><a href="#theme-settings">Theme settings</a></li>
+      <li><a href="#wine-data">Wine data</a></li>
+      <li class="toc__group">Build the store</li>
+      <li><a href="#navigation">Menus and collections</a></li>
+      <li><a href="#home">Home page sections</a></li>
+      <li><a href="#product">Product page</a></li>
+      <li><a href="#collection">Collections and search</a></li>
+      <li><a href="#cart">Cart and gift cards</a></li>
+      <li><a href="#motion">Motion</a></li>
+      <li><a href="#age">Age verification</a></li>
+      <li><a href="#languages">Languages</a></li>
+      <li class="toc__group">Help</li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#support">Support</a></li>
+      <li><a href="#releases">Release notes</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <header class="intro">
+      <p class="eyebrow">Shopify theme for wine shops</p>
+      <h1>Setting up Solera</h1>
+      <p class="lede">Solera is built for stores that sell wine. Each product can carry its grape, origin, vintage, tasting profile and pairings, and the theme turns that data into tasting bars, origin stories and "what to drink with dinner" shortcuts.</p>
+      <div class="meta">
+        <span>Version <b>1.0.0</b></span>
+        <span>Languages <b>English, Spanish</b></span>
+        <span>Demo store <b>Viento Sur</b></span>
+      </div>
+    </header>
+
+    <section id="quick-start">
+      <h2>Quick start</h2>
+      <p>These steps get a new store from install to a working wine catalog. Each one links to its full section below.</p>
+      <ol class="steps">
+        <li><span>Add Solera from the Theme Store, then open <span class="path">Online Store › Themes › Customize</span>.</span></li>
+        <li><span>Pick fonts, colors and your logo in <a href="#theme-settings">Theme settings</a>.</span></li>
+        <li><span>Create the wine metafields in <span class="path">Settings › Custom data › Products</span>, using the keys in <a href="#wine-data">Wine data</a>. This takes about ten minutes and is what makes the wine features work.</span></li>
+        <li><span>Fill in the wine fields on each product. The product page, product cards and wine sections pick them up automatically.</span></li>
+        <li><span>Create collections by country, wine type and dish, and build your <a href="#navigation">menus</a>.</span></li>
+        <li><span>Set the minimum age and legal note in <a href="#age">Age verification</a>, and check the alcohol sale rules for your country.</span></li>
+      </ol>
+    </section>
+
+    <section id="theme-settings">
+      <h2>Theme settings</h2>
+      <p>Open the theme editor and click the brush icon (<span class="path">Theme settings</span>) to change settings that apply to the whole store.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Group</th><th>What it controls</th></tr></thead>
+          <tbody>
+            <tr><td>Typography</td><td>Heading and body fonts from the Shopify font library, and a size scale for each (80–120% for headings, 90–120% for body text).</td></tr>
+            <tr><td>Colors</td><td>Four color schemes. Each scheme sets a background, text, muted text, buttons, borders, an accent, the two colors of the tasting bars and a highlight. Every section has a <b>Color scheme</b> setting that picks one.</td></tr>
+            <tr><td>Layout</td><td>Page width (standard or wide), the side margin on large screens, and the space between sections.</td></tr>
+            <tr><td>Products</td><td>Product card image shape and fit, whether cards show grape and country and the tasting bars, and the hover effect.</td></tr>
+            <tr><td>Cart</td><td>Drawer or cart page, the free shipping message, the drawer suggestion and the links shown in an empty cart.</td></tr>
+            <tr><td>Age verification</td><td>The age check dialog. See <a href="#age">Age verification</a>.</td></tr>
+            <tr><td>Shapes</td><td>Corner radius for buttons (0–28px) and images (0–24px).</td></tr>
+            <tr><td>Social media</td><td>Links to your accounts, shown in the footer.</td></tr>
+            <tr><td>Animations</td><td>Scroll effects on or off. See <a href="#motion">Motion</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><p><b>Tip.</b> Product cards use <i>Fit</i> by default so the whole bottle shows. Bottle photos on a plain background in a 4:5 portrait shape look best.</p></div>
+    </section>
+
+    <section id="wine-data">
+      <h2>Wine data</h2>
+      <p>Solera reads wine details from product metafields in the <code>custom</code> namespace. Create these definitions once in <span class="path">Settings › Custom data › Products › Add definition</span>. Use exactly the namespace and key shown; the name can be anything, in any language.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Namespace and key</th><th>Type</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td><code>custom.grape</code></td><td>Single line text</td><td>Label on cards and product page, wine facts</td></tr>
+            <tr><td><code>custom.country</code></td><td>Single line text</td><td>Label on cards and product page, wine facts</td></tr>
+            <tr><td><code>custom.region</code></td><td>Single line text</td><td>Wine facts, "Where it comes from"</td></tr>
+            <tr><td><code>custom.vintage</code></td><td>Single line text</td><td>Wine facts, "Where it comes from"</td></tr>
+            <tr><td><code>custom.aging</code></td><td>Single line text</td><td>Wine facts, "Where it comes from"</td></tr>
+            <tr><td><code>custom.alcohol</code></td><td>Single line text</td><td>Wine facts, for example <code>13.5%</code></td></tr>
+            <tr><td><code>custom.serving_temperature</code></td><td>Single line text</td><td>Wine facts, "Wine pairings", for example <code>16–18 °C</code></td></tr>
+            <tr><td><code>custom.body</code></td><td>Integer, min 1, max 5</td><td>Tasting bars</td></tr>
+            <tr><td><code>custom.tannins</code></td><td>Integer, min 1, max 5</td><td>Tasting bars</td></tr>
+            <tr><td><code>custom.acidity</code></td><td>Integer, min 1, max 5</td><td>Tasting bars</td></tr>
+            <tr><td><code>custom.pairings</code></td><td>List of single line text</td><td>Pairings block, "Wine pairings" section, tasting story</td></tr>
+            <tr><td><code>custom.tasting_color</code></td><td>Multi-line text</td><td>Tasting story</td></tr>
+            <tr><td><code>custom.tasting_aroma</code></td><td>Multi-line text</td><td>Tasting story</td></tr>
+            <tr><td><code>custom.tasting_palate</code></td><td>Multi-line text</td><td>Tasting story</td></tr>
+            <tr><td><code>custom.wine_color</code></td><td>Color</td><td>The wine poured in the tasting story</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Every field is optional. When a field is empty, the part of the page that uses it is hidden, so a sparkling wine without tannins simply shows two bars instead of three.</p>
+      <h3>Tasting bars</h3>
+      <p>Body, tannins and acidity go from 1 (light) to 5 (full). They appear on product cards (turn off in <span class="path">Theme settings › Products</span>) and in the <b>Tasting profile</b> block on the product page.</p>
+      <h3>Pairings</h3>
+      <p>Write one dish per entry, for example <i>Barbecue</i>, <i>Aged cheese</i>, <i>Fish</i>. Solera picks an icon from the dish name. It recognizes red meat and barbecue, lamb and roasts, poultry, pork, fish, seafood, cheese and charcuterie, pasta and risotto, mushrooms, vegetables and salads, spicy food, dessert and chocolate, in English, Spanish and Portuguese. Other dishes get a plate icon. You can also choose the icon by hand in the Dish picker and Wine pairings sections.</p>
+      <div class="note"><p><b>Filters.</b> To let shoppers filter by country or grape, add those metafields as filters in the free <b>Search &amp; Discovery</b> app (<span class="path">Filters › Add filter</span>).</p></div>
+    </section>
+
+    <section id="navigation">
+      <h2>Menus and collections</h2>
+      <h3>Main menu</h3>
+      <p>Choose the menu in the <b>Header</b> section. Items with sub-items open a large dropdown on desktop and a sliding panel on phones.</p>
+      <ul>
+        <li><b>Show as pills.</b> Type the title of one submenu, for example <i>By country</i>, and its links appear as rounded country pills inside the dropdown.</li>
+        <li><b>Menu feature.</b> Add this block to show an image with a heading and link inside a dropdown. In <b>Menu item</b>, type the top-level item where it should appear, for example <i>Wines</i>.</li>
+      </ul>
+      <h3>Suggested collections</h3>
+      <p>Automated collections keep themselves up to date. The demo store uses:</p>
+      <ul>
+        <li><b>By wine type</b>: red, white, rosé. Condition: product type equals <i>Red wine</i>, and so on.</li>
+        <li><b>By country</b>: one collection per country, using a tag such as <i>Uruguay</i>. These feed the <b>Shop by origin</b> section and the country pills.</li>
+        <li><b>By dish</b>: barbecue, fish and seafood, pasta, cheese, desserts, using tags. These feed the <b>Dish picker</b>.</li>
+        <li><b>On sale</b>: products whose price is reduced (they have a compare-at price).</li>
+      </ul>
+      <p>Create a <b>Countries</b> menu that links to each country collection. You can use it in the <b>Shop by origin</b> section and as the quick links in an empty cart.</p>
+    </section>
+
+    <section id="home">
+      <h2>Home page sections</h2>
+      <p>Add sections with <span class="path">Add section</span> in the theme editor. All of them can also be used on other pages.</p>
+      <dl class="sections-list">
+        <div><dt>Hero</dt><dd>Large image with text, side by side or with the text over the image. Pick a featured product to use its photo and link. Includes the <b>rotating seal</b>: a round label with your own text that can turn slowly.</dd></div>
+        <div><dt>Slideshow</dt><dd>Up to six slides, each with an image, an optional phone image, text and two buttons. Slides can change on their own every 4–12 seconds. Visitors can always pause them.</dd></div>
+        <div><dt>Scrolling strip</dt><dd>A thin band of short words that scrolls sideways, such as <i>Free shipping · Tastings every Friday</i>. It pauses on hover and has a pause button.</dd></div>
+        <div><dt>Featured collection</dt><dd>A product grid. Add more than one <b>Tab</b> block to let shoppers switch between collections.</dd></div>
+        <div><dt>Dish picker</dt><dd>"What are you eating tonight?" Each dish links to a collection of wines that go with it, with an icon and a wine count.</dd></div>
+        <div><dt>Shop by origin</dt><dd>A list of countries or regions taken from a menu, with a short description of each collection.</dd></div>
+        <div><dt>Image with text</dt><dd>Photo with a heading, text and buttons. Good for your shop's story.</dd></div>
+        <div><dt>Columns</dt><dd>Two to four columns, numbered or plain. Good for "How it works" or "Why buy from us".</dd></div>
+        <div><dt>Rich text</dt><dd>Heading, text, a quote and buttons, centered or left aligned.</dd></div>
+        <div><dt>FAQ</dt><dd>Questions that open and close. The first can start open.</dd></div>
+        <div><dt>Video</dt><dd>An uploaded video, or a YouTube or Vimeo link, with a cover image.</dd></div>
+        <div><dt>Contact form, Apps, Custom Liquid</dt><dd>A contact form with contact details, a space for app blocks, and a place for your own Liquid code.</dd></div>
+      </dl>
+      <div class="note"><p><b>Hero or slideshow?</b> Use the Hero when one wine or message leads the page. Use the Slideshow when you rotate several offers. They can be used together.</p></div>
+    </section>
+
+    <section id="product">
+      <h2>Product page</h2>
+      <p>The <b>Product information</b> section is made of blocks you can reorder, hide or remove. Most wine blocks fill themselves from the metafields, and each has its own fields to override a value for one product template.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Block</th><th>Shows</th></tr></thead>
+          <tbody>
+            <tr><td>Labels</td><td>Grape and country tags above the title</td></tr>
+            <tr><td>Winery</td><td>The product vendor</td></tr>
+            <tr><td>Variant picker</td><td>Buttons or a dropdown, for example <i>Bottle</i> or <i>Case of 6</i></td></tr>
+            <tr><td>Buy buttons</td><td>Add to cart, express checkout buttons, and the gift card recipient form</td></tr>
+            <tr><td>Tasting profile</td><td>Body, tannins and acidity bars</td></tr>
+            <tr><td>Wine facts</td><td>Up to six facts: grape, region or country, vintage, aging, alcohol, serving temperature</td></tr>
+            <tr><td>Pairings</td><td>Dish icons from the pairings metafield</td></tr>
+            <tr><td>Description, Collapsible tab</td><td>The product description, and extra tabs such as shipping or storage</td></tr>
+            <tr><td>Pickup availability, Text, Custom Liquid, Apps</td><td>Store pickup, extra text, your own code, and app blocks such as reviews</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Below the main section, the default product template adds three wine sections:</p>
+      <ul>
+        <li><b>Tasting story.</b> As the visitor scrolls, a bottle pours a glass in the wine's color and the tasting notes appear one by one: color, aroma, palate and pairings.</li>
+        <li><b>Where it comes from.</b> A photo of the region with the region, country, vintage, aging and alcohol.</li>
+        <li><b>Wine pairings.</b> The dishes from the pairings metafield, with the serving temperature.</li>
+      </ul>
+      <p>Then come product reviews (from your reviews app), "Complete the table" (complementary products set in Search &amp; Discovery) and related products. A bar with the add to cart button appears at the bottom of the screen once the main button scrolls away. You can turn it off in the section settings.</p>
+    </section>
+
+    <section id="collection">
+      <h2>Collections and search</h2>
+      <ul>
+        <li><b>Filters</b> come from the Search &amp; Discovery app. Price, availability, product type and your wine metafields work well.</li>
+        <li><b>Quick filter as pills.</b> In the <b>Product grid</b> section, type the name of a filter (for example <i>Country</i>) to show its values as pills above the products.</li>
+        <li>Choose products per page, columns on desktop, and one or two columns on phones.</li>
+        <li>Search results use the same product cards, filters and sorting.</li>
+      </ul>
+    </section>
+
+    <section id="cart">
+      <h2>Cart and gift cards</h2>
+      <ul>
+        <li><b>Cart drawer or page.</b> Set in <span class="path">Theme settings › Cart</span>. The drawer can suggest one product that goes with what is in the cart.</li>
+        <li><b>Free shipping message.</b> Set how many bottles qualify (for example 6). The cart shows how many are left. The theme only shows the message; create the free shipping rate itself in <span class="path">Settings › Shipping and delivery</span>. Set it to 0 to hide the message.</li>
+        <li><b>Empty cart.</b> Pick a menu, such as your countries menu, to show quick links instead of a blank page.</li>
+        <li><b>Gift cards.</b> Turn on gift cards in <span class="path">Settings › Gift cards</span>. Customers can send one to a recipient with a message and a delivery date. The gift card email page is styled to match the theme.</li>
+      </ul>
+    </section>
+
+    <section id="motion">
+      <h2>Motion</h2>
+      <p>Solera moves in a few deliberate places. Visitors whose device asks for reduced motion always see the still version, whatever you choose here.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Effect</th><th>Where to change it</th></tr></thead>
+          <tbody>
+            <tr><td>Sections rising into view while scrolling, tasting story pour</td><td><span class="path">Theme settings › Animations › Enable scroll effects</span></td></tr>
+            <tr><td>Second photo or zoom when hovering a product card</td><td><span class="path">Theme settings › Products › Hover effect</span></td></tr>
+            <tr><td>Rotating seal</td><td>Hero section › <b>Rotate the seal</b></td></tr>
+            <tr><td>Scrolling strip speed and direction</td><td>Scrolling strip section</td></tr>
+            <tr><td>Slides changing on their own</td><td>Slideshow section › <b>Change slides automatically</b></td></tr>
+            <tr><td>Rotating announcements</td><td>Announcement bar section</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="age">
+      <h2>Age verification</h2>
+      <p>When it is on, visitors are asked to confirm their age before seeing the store. Set the minimum age (18 to 21), how many days the answer is remembered, the heading (use <code>[age]</code> to insert the age), the text, a legal note, a logo and an optional background image.</p>
+      <p>The dialog is hidden while you work in the theme editor. Turn on <b>Show in the theme editor</b> to style it.</p>
+      <div class="note"><p><b>Important.</b> The age check is a courtesy screen, not legal verification. You are responsible for following the alcohol sale and delivery rules in the places you sell to. Use the footer's <b>Legal notice</b> for any warning your country requires.</p></div>
+    </section>
+
+    <section id="languages">
+      <h2>Languages</h2>
+      <p>The theme's own text (buttons, labels, messages) comes in English and Spanish. To sell in another language, add it in <span class="path">Settings › Languages</span> and translate your products, collections and pages with the free <b>Translate &amp; Adapt</b> app. You can also change any theme text in <span class="path">Online Store › Themes › … › Edit default theme content</span>.</p>
+      <p>The header and footer can show a language selector and a country/region selector. Turn them on in each section's settings.</p>
+      <div class="note"><p><b>After auto-translating,</b> read the wine terms in your language. Machine translation often gets wine vocabulary wrong (for example, Spanish uses <i>cepa</i> for grape variety and <i>añada</i> for vintage).</p></div>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+      <details>
+        <summary>The tasting bars, grape or country do not show on my products.</summary>
+        <div><p>Check that the metafield definitions use the <code>custom</code> namespace and the exact keys in <a href="#wine-data">Wine data</a>, and that the product has values. Body, tannins and acidity must be whole numbers from 1 to 5. Also check that <b>Show tasting profile</b> is on in <span class="path">Theme settings › Products</span>.</p></div>
+      </details>
+      <details>
+        <summary>Can I sell products that are not wine?</summary>
+        <div><p>Yes. Leave the wine fields empty and the wine parts of the page stay hidden. Spirits, beer, glassware and gift boxes work as regular products.</p></div>
+      </details>
+      <details>
+        <summary>I already store wine data in another app or namespace.</summary>
+        <div><p>Solera reads the <code>custom</code> namespace. You can copy the values into the keys listed above with a bulk editor or a CSV import, or type values directly in the product page blocks for a specific template.</p></div>
+      </details>
+      <details>
+        <summary>How do I show a different set of sections for one wine?</summary>
+        <div><p>Create a new product template in the theme editor (<span class="path">Product › Create template</span>), change it, and assign it to that product in the admin.</p></div>
+      </details>
+      <details>
+        <summary>The free shipping message says one thing and checkout charges shipping.</summary>
+        <div><p>The message is only a reminder. The real rule lives in <span class="path">Settings › Shipping and delivery</span>. Make the bottle count in the theme match the condition of your free shipping rate.</p></div>
+      </details>
+      <details>
+        <summary>Can I turn off all animations?</summary>
+        <div><p>Turn off scroll effects, set the card hover to <i>None</i>, turn off the seal rotation and slideshow autoplay, and avoid the scrolling strip. See <a href="#motion">Motion</a>.</p></div>
+      </details>
+      <details>
+        <summary>Will updates erase my changes?</summary>
+        <div><p>Theme updates keep your settings and content. Changes made directly in the code are not carried over, so keep a copy of anything you edit by hand.</p></div>
+      </details>
+    </section>
+
+    <section id="support">
+      <h2>Support</h2>
+      <p>We help with setting up Solera, using its settings and sections, and anything that does not work as described in this guide. We reply within <b>2 business days</b>, Monday to Friday (Uruguay time, UTC−3).</p>
+      <div class="contact">
+        <span class="contact__label">Email</span>
+        <a class="contact__value" href="mailto:tihago@alaskadigital.uy">tihago@alaskadigital.uy</a>
+      </div>
+      <p>To help us answer quickly, include:</p>
+      <ul>
+        <li>Your store address (<code>your-store.myshopify.com</code>)</li>
+        <li>The page and section where the problem happens</li>
+        <li>A screenshot or short screen recording</li>
+        <li>If the store is password protected, a preview link to the theme</li>
+      </ul>
+      <p>Support does not cover custom code changes, third-party apps, or design work beyond the theme settings. We can point you in the right direction for those.</p>
+    </section>
+
+    <section id="releases">
+      <h2>Release notes</h2>
+      <div class="release">
+        <div><div class="release__v">1.0.0</div><div class="release__date">First release</div></div>
+        <ul>
+          <li>Wine data from product metafields: tasting bars, wine facts, pairings with dish icons.</li>
+          <li>Wine sections: Tasting story, Where it comes from, Wine pairings, Dish picker, Shop by origin.</li>
+          <li>Hero with rotating seal, Slideshow, Scrolling strip.</li>
+          <li>Cart drawer with free shipping message and pairing suggestion, gift card recipient form.</li>
+          <li>Age verification dialog.</li>
+          <li>English and Spanish theme text.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>Solera is a Shopify theme by Alaska Digital. Shopify and the Shopify Theme Store are trademarks of Shopify Inc.</footer>
+  </main>
+</div>
+
+</body>
+</html>
