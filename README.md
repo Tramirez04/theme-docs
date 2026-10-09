@@ -4,3 +4,4 @@ Documentation for Shopify themes by Alaska Digital, published at https://docs.al
 
 - [Solera](https://docs.alaskadigital.uy/solera/)
 - [Cota](https://docs.alaskadigital.uy/cota/)
+- [Balm](https://docs.alaskadigital.uy/balm/)

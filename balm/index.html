@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Balm Theme Guide</title>
+<meta name="description" content="Setup guide, metafields reference, FAQ, support and release notes for the Balm Shopify theme by Alaska Digital.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Karla:wght@400;600&display=swap">
+<style>
+  /* Layout: sticky contents rail on the left, one reading column on the right; stacks on phones. */
+  :root {
+    --bg: #F7EEEA;
+    --surface: #FFF8F3;
+    --fg: #3D1F2E;
+    --muted: #6B4A58;
+    --line: #DCC3BA;
+    --accent: #9E2F4C;
+    --accent-soft: #EEDAD3;
+    --code-bg: #EFE0DA;
+    --button: #3D1F2E;
+    --on-button: #F7EEEA;
+    --font-display: 'Cormorant', Georgia, 'Times New Roman', serif;
+    --font-body: 'Karla', -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #2B1A24; --surface: #3A2531; --fg: #F7EEEA; --muted: #CDB7C0; --line: #5E4152;
+      --accent: #F48BA0; --accent-soft: #452B39; --code-bg: #4A3040; --button: #F7EEEA; --on-button: #2B1A24; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #2B1A24; --surface: #3A2531; --fg: #F7EEEA; --muted: #CDB7C0; --line: #5E4152;
+    --accent: #F48BA0; --accent-soft: #452B39; --code-bg: #4A3040; --button: #F7EEEA; --on-button: #2B1A24; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.65 var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 64px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 32px;
+    padding-block: 48px 96px;
+  }
+  .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; max-height: calc(100vh - 48px); overflow-y: auto; }
+  .brand { display: flex; flex-direction: column; gap: 2px; margin-bottom: 28px; }
+  .brand__name { font: 500 38px/1 var(--font-display); }
+  .brand__by { font-size: 13px; color: var(--muted); }
+  .toc { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+  .toc a { display: block; padding: 5px 12px; border-radius: 999px; color: var(--muted); text-decoration: none; }
+  .toc a:hover { color: var(--fg); background: var(--surface); }
+  .toc__group { margin-top: 14px; padding: 0 12px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+  main { min-width: 0; max-width: 760px; }
+  .intro { padding-bottom: 40px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+  .eyebrow { margin: 0 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+  h1 { margin: 0 0 16px; font: 500 clamp(44px, 6.5vw, 66px)/1 var(--font-display); text-wrap: balance; }
+  h1 em, h2 em { font-style: italic; }
+  .lede { margin: 0; font-size: 19px; color: var(--muted); max-width: 60ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 20px; font-size: 14px; color: var(--muted); }
+  .meta b { color: var(--fg); font-weight: 600; }
+
+  section { padding-top: 48px; }
+  h2 { margin: 0 0 14px; font: 500 40px/1.1 var(--font-display); text-wrap: balance; }
+  h3 { margin: 32px 0 8px; font-size: 18px; font-weight: 600; line-height: 1.35; }
+  p, li { max-width: 68ch; }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--muted); }
+  code, kbd {
+    font: 500 0.86em var(--font-mono);
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .path { font-weight: 600; }
+
+  .steps { list-style: none; padding: 0; counter-reset: step; display: flex; flex-direction: column; gap: 14px; }
+  .steps li { counter-increment: step; display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 12px; margin: 0; }
+  .steps li::before {
+    content: counter(step);
+    display: grid; place-items: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--fg);
+    font: 600 14px/1 var(--font-body); font-variant-numeric: tabular-nums;
+    margin-top: 1px;
+  }
+
+  .note {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: var(--accent-soft);
+    font-size: 15px;
+  }
+  .note p:last-child { margin-bottom: 0; }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  td code { white-space: nowrap; }
+  caption { caption-side: top; text-align: left; padding: 12px 14px 0; font-weight: 600; }
+
+  .sections-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 0 32px; margin: 8px 0 0; }
+  .sections-list div { padding: 14px 0; border-top: 1px solid var(--line); }
+  .sections-list dt { font-weight: 600; margin-bottom: 4px; }
+  .sections-list dd { margin: 0; color: var(--muted); font-size: 15px; }
+
+  details { border-top: 1px solid var(--line); }
+  details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; padding: 14px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font: 500 26px/0.8 var(--font-display); color: var(--accent); }
+  details[open] summary::after { content: '–'; }
+  details > div { padding-bottom: 14px; }
+
+  .contact { display: grid; gap: 10px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); margin: 16px 0; }
+  .contact__label { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .contact__text { margin: 0; color: var(--muted); }
+  .contact__button { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 24px; border-radius: 999px; background: var(--button); color: var(--on-button); font-weight: 600; text-decoration: none; }
+  .contact__button:hover { opacity: 0.9; }
+  .contact__alt { font-size: 14px; color: var(--muted); }
+
+  .release { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .release__v { font: 500 28px/1.1 var(--font-display); }
+  .release__date { font-size: 13px; color: var(--muted); }
+  .release ul { margin-bottom: 0; }
+
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-inline: 16px; padding-block: 28px 72px; }
+    .rail { position: static; max-height: none; overflow: visible; }
+    .toc { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    .toc__group { display: none; }
+    .toc a { border: 1px solid var(--line); background: var(--surface); padding: 4px 12px; font-size: 13px; }
+    .release { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    h2 { font-size: 34px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="rail" aria-label="Contents">
+    <div class="brand">
+      <span class="brand__name">Balm</span>
+      <span class="brand__by">Theme guide · Alaska Digital</span>
+    </div>
+    <ul class="toc">
+      <li class="toc__group">Start</li>
+      <li><a href="#quick-start">Quick start</a></li>
+      <li><a href="#theme-settings">Theme settings</a></li>
+      <li><a href="#metafields">Ingredients and metafields</a></li>
+      <li class="toc__group">Build the store</li>
+      <li><a href="#navigation">Menus and collections</a></li>
+      <li><a href="#home">Home page sections</a></li>
+      <li><a href="#product">Product page</a></li>
+      <li><a href="#ingredient-pages">Glossary and pairing guide</a></li>
+      <li><a href="#quiz">Skin quiz</a></li>
+      <li><a href="#collection">Collections and search</a></li>
+      <li><a href="#cart">Cart and gift cards</a></li>
+      <li><a href="#live">Live streams</a></li>
+      <li><a href="#blog">Journal</a></li>
+      <li><a href="#motion">Motion</a></li>
+      <li><a href="#languages">Languages</a></li>
+      <li class="toc__group">Help</li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#support">Support</a></li>
+      <li><a href="#releases">Release notes</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <header class="intro">
+      <p class="eyebrow">Shopify theme for beauty and skincare stores</p>
+      <h1>Setting up <em>Balm</em></h1>
+      <p class="lede">Balm is built for stores that sell skincare and beauty. Products carry their key ingredients, routine step and texture, and the theme turns them into morning and night rituals, a skin quiz, an ingredient glossary and a pairing guide, so shoppers know what to use, in what order and with what.</p>
+      <div class="meta">
+        <span>Version <b>1.0.0</b></span>
+        <span>Languages <b>English, Spanish</b></span>
+        <span>Demo store <b>Balm</b></span>
+        <span><a href="#support">Get support</a></span>
+      </div>
+    </header>
+
+    <section id="quick-start">
+      <h2>Quick start</h2>
+      <p>These steps take a new store from install to a working skincare catalog. Each one links to its full section below.</p>
+      <ol class="steps">
+        <li><span>Add Balm from the Theme Store, then open <span class="path">Online Store › Themes › Customize</span>.</span></li>
+        <li><span>Pick fonts, colors and your logo in <span class="path">Theme settings</span>. See <a href="#theme-settings">Theme settings</a>.</span></li>
+        <li><span>Create the <b>ingredient</b> metaobject and the product metafields listed in <a href="#metafields">Ingredients and metafields</a>. It takes about fifteen minutes, and it is what makes the ingredient tags, rituals, glossary and "What's inside" work.</span></li>
+        <li><span>Fill in each product: routine step, morning or night, skin types, key ingredients, how to use and the full ingredient list.</span></li>
+        <li><span>Create collections by category, by skin type and by ingredient, and build your <a href="#navigation">menus</a>.</span></li>
+        <li><span>Choose the products of your morning and night rituals in the <b>Ritual</b> section and in <span class="path">Theme settings › Cart</span>.</span></li>
+        <li><span>Create the <b>Routine</b> and <b>Ingredients</b> pages and assign them the <code>page.routine</code> and <code>page.ingredients</code> templates. See <a href="#quiz">Skin quiz</a> and <a href="#ingredient-pages">Glossary and pairing guide</a>.</span></li>
+      </ol>
+    </section>
+
+    <section id="theme-settings">
+      <h2>Theme settings</h2>
+      <p>Open the theme editor and click the brush icon (<span class="path">Theme settings</span>) to change settings that apply to the whole store.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Group</th><th>What it controls</th></tr></thead>
+          <tbody>
+            <tr><td>Typography</td><td>Heading and body fonts from the Shopify font library, with a size scale for each (80–120% for headings, 90–120% for body text). One word set in italics in a heading uses the heading font's italic style, as in <i>Find your <em>routine</em></i>.</td></tr>
+            <tr><td>Colors</td><td>Four color schemes. Each one sets a background (or gradient), surface, text, secondary text, control border, divider, button, button label, accent, text on accent, and a <b>Live and sale</b> color used only for the live bar and the sale badge. Every section has a <b>Color scheme</b> setting that picks one, and <b>Page color scheme</b> sets the page itself.</td></tr>
+            <tr><td>Layout</td><td>Page width (standard 1200px or wide 1360px), the side margin on large screens (16–80px; phones always use 16px), the space between sections (compact, standard or airy) and corners (square, soft or round) for buttons, fields, cards, images and panels.</td></tr>
+            <tr><td>Product cards</td><td>Image shape (portrait 4:5, square or natural), hover effect (second image, zoom or none) and the key ingredient tag on the image.</td></tr>
+            <tr><td>Cart</td><td>Drawer or cart page, free shipping bar, order note, the "Complete your ritual" box and the empty cart. See <a href="#cart">Cart and gift cards</a>.</td></tr>
+            <tr><td>Live stream</td><td>Your next TikTok, Instagram or YouTube live. See <a href="#live">Live streams</a>.</td></tr>
+            <tr><td>Favicon, Social media</td><td>The browser tab icon, and links to your Instagram, TikTok, YouTube, Facebook, Pinterest and X accounts, shown in the footer.</td></tr>
+            <tr><td>Animations</td><td>Scroll effects on or off. See <a href="#motion">Motion</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><p><b>Tip.</b> Product photos on a plain, soft background, all in the same shape, make the catalog feel calm and consistent. Add a second photo of the texture (a swatch of the cream or a drop of the serum) to every product: cards show it on hover.</p></div>
+    </section>
+
+    <section id="metafields">
+      <h2>Ingredients and metafields</h2>
+      <p>Balm reads skincare details from metafields in the <code>custom</code> namespace and from an <b>ingredient</b> metaobject. Create them once in <span class="path">Settings › Custom data</span>. Use exactly the namespace, key and type shown; the names can be anything, in any language. Every field is optional: the parts that need it stay hidden when a product has none.</p>
+
+      <h3>1. The ingredient metaobject</h3>
+      <p>In <span class="path">Settings › Custom data › Metaobjects › Add definition</span>, create a definition with the type <code>ingredient</code> and turn on <b>Storefronts</b> access, so the theme can read it. Add these fields, then add one entry per ingredient in <span class="path">Content › Metaobjects</span>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Key</th><th>Type</th><th>Example and use</th></tr></thead>
+          <tbody>
+            <tr><td><code>name</code></td><td>Single line text</td><td><i>Niacinamide</i>. Set it as the display name</td></tr>
+            <tr><td><code>symbol</code></td><td>Single line text</td><td><i>B3</i>. Shown large on glossary and ingredient cards</td></tr>
+            <tr><td><code>benefit</code></td><td>Multi-line text</td><td>What it does, in one or two sentences</td></tr>
+            <tr><td><code>pairs_with</code></td><td>Single line text</td><td><i>Hyaluronic acid, ceramides</i></td></tr>
+            <tr><td><code>avoid_with</code></td><td>Single line text</td><td><i>Strong acids in the same step</i></td></tr>
+            <tr><td><code>when</code></td><td>Single line text</td><td><i>Morning and night</i></td></tr>
+            <tr><td><code>concerns</code></td><td>List of single line text</td><td><i>Pores, Oil control</i>. The glossary's filter buttons</td></tr>
+            <tr><td><code>featured</code></td><td>True or false</td><td>Highlights its card in the glossary, for example as the ingredient of the month</td></tr>
+            <tr><td><code>collection</code></td><td>Collection</td><td>The collection with the products that have it. Cards link there</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2. Product metafields</h3>
+      <p>In <span class="path">Settings › Custom data › Products › Add definition</span>:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Namespace and key</th><th>Type</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td><code>custom.key_ingredient</code></td><td>Single line text</td><td>The tag on product cards and on the product image, for example <i>Vitamin C 15%</i></td></tr>
+            <tr><td><code>custom.subtitle</code></td><td>Single line text</td><td>Subtitle block under the product title</td></tr>
+            <tr><td><code>custom.routine_step</code></td><td>Single line text</td><td>The step name, for example <i>Step 2 · Treat</i>, in the Ritual section, the cart ritual and on cards</td></tr>
+            <tr><td><code>custom.morning</code></td><td>True or false</td><td>Ritual step block: <i>Morning</i> tag</td></tr>
+            <tr><td><code>custom.night</code></td><td>True or false</td><td>Ritual step block: <i>Night</i> tag</td></tr>
+            <tr><td><code>custom.skin_types</code></td><td>List of single line text</td><td>Skin types block, for example <i>Dry, Sensitive</i></td></tr>
+            <tr><td><code>custom.how_to_use</code></td><td>Multi-line text</td><td>How to use row</td></tr>
+            <tr><td><code>custom.ingredients</code></td><td>Multi-line text</td><td>Full ingredients row (the INCI list)</td></tr>
+            <tr><td><code>custom.key_ingredients</code></td><td>List of metaobjects (ingredient)</td><td>Key ingredients section: name, benefit and a link to each ingredient's collection</td></tr>
+            <tr><td><code>custom.key_ingredient_amounts</code></td><td>List of single line text</td><td>The amount of each key ingredient, in the same order, for example <i>10%</i></td></tr>
+            <tr><td><code>custom.texture_level</code></td><td>Integer, 1 to 5</td><td>How it feels: texture scale (light to rich)</td></tr>
+            <tr><td><code>custom.finish_level</code></td><td>Integer, 1 to 5</td><td>How it feels: finish scale (matte to dewy)</td></tr>
+            <tr><td><code>custom.scent</code></td><td>Single line text</td><td>How it feels: scent</td></tr>
+            <tr><td><code>custom.lasts</code></td><td>Single line text</td><td>How it feels: how long a bottle lasts</td></tr>
+            <tr><td><code>custom.feel</code></td><td>Multi-line text</td><td>How it feels: a short description of the texture</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3. Collection and blog post metafields</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Owner, namespace and key</th><th>Type</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td>Collections · <code>custom.ingredient</code></td><td>Metaobject (ingredient)</td><td>Turns an ingredient collection into an ingredient page: symbol and benefit on collection list cards, and benefit, pairs well with and when in the collection banner and the search match card</td></tr>
+            <tr><td>Blog posts · <code>custom.product</code></td><td>Product</td><td>The product shown after the post</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="navigation">
+      <h2>Menus and collections</h2>
+      <h3>Main menu</h3>
+      <p>Choose the menu in the <b>Header</b> section. Items with two levels open a large menu on computers and a sliding panel on phones.</p>
+      <ul>
+        <li><b>Columns as buttons.</b> Short columns, such as <i>By skin type</i> or <i>Morning / Night</i>, can show as round buttons. Choose all columns except the first, only the last, or none. Links to collections can show their product count.</li>
+        <li><b>Menu feature.</b> Add this block to the Header to show a product, or a collection such as a kit, inside a large menu. In <b>Menu item</b>, choose its position in the main menu (1 is the first). You can replace the image and write your own label, heading and link.</li>
+        <li><b>Quick links.</b> Pick a short menu, for example your skin types, to show as buttons under the header on phones and in the mobile menu.</li>
+      </ul>
+      <h3>Suggested collections</h3>
+      <p>Automated collections keep themselves up to date. The demo store uses:</p>
+      <ul>
+        <li><b>By category</b>: cleansers, toners, serums, moisturizers, sunscreen and eye care, using the product type.</li>
+        <li><b>By skin type</b>: dry, oily, combination and sensitive, using tags such as <i>Dry</i>. These feed the <b>Skin type picker</b> and the quick links.</li>
+        <li><b>By ingredient</b>: one per ingredient, using tags such as <i>Niacinamide</i>, each linked to its ingredient entry with <code>custom.ingredient</code>.</li>
+        <li><b>Bestsellers</b> and <b>New</b>, using tags.</li>
+      </ul>
+    </section>
+
+    <section id="home">
+      <h2>Home page sections</h2>
+      <p>Add sections with <span class="path">Add section</span> in the theme editor. All of them can also be used on other pages.</p>
+      <dl class="sections-list">
+        <div><dt>Slideshow</dt><dd>Up to six slides with an image, an optional phone image or a video that plays muted, and a heading, text and button. Slides can change on their own, with a pause button.</dd></div>
+        <div><dt>Skin type picker</dt><dd>Buttons for up to six skin types. Each one shows a short tip and two or three products from its collection.</dd></div>
+        <div><dt>Ritual</dt><dd>Your morning and night rituals, step by step, with each product's step name. A button adds every available product of the ritual to the bag, with an optional offer text. On a product page, the product is highlighted and its ritual opens first.</dd></div>
+        <div><dt>Skin quiz</dt><dd>Three questions that build a routine from your products. See <a href="#quiz">Skin quiz</a>.</dd></div>
+        <div><dt>Shoppable videos</dt><dd>Up to four vertical videos (9:16) uploaded to Shopify. They play muted while on screen, each with a pause button and the product it uses, ready to add to the bag.</dd></div>
+        <div><dt>Live stream</dt><dd>Your next live with its date, a countdown and "Add to calendar", and the products you will show. See <a href="#live">Live streams</a>.</dd></div>
+        <div><dt>Collection list</dt><dd>Cards for your collections, as images or as <b>ingredient</b> cards with the symbol and benefit from <code>custom.ingredient</code>, and an optional product count.</dd></div>
+        <div><dt>Before and after</dt><dd>Two photos with a slider that shoppers drag (or move with the arrow keys), next to a heading, text and button.</dd></div>
+        <div><dt>Featured collection</dt><dd>A product grid of 2 to 12 products, with quick add and an optional routine step on each card.</dd></div>
+        <div><dt>Real results</dt><dd>Figures and testimonials, with an optional filter by skin type and before and after photos. Use only real figures, and say how they were measured in <b>How it was measured</b>.</dd></div>
+        <div><dt>Contact form, Apps, Custom Liquid</dt><dd>A contact form, a space for app blocks, and a place for your own Liquid code.</dd></div>
+      </dl>
+      <p>The <b>Announcement bar</b> in the header group can rotate several messages, and shows your next live. The footer has a newsletter block (subscribers are added to <span class="path">Customers</span> with the tag <i>newsletter</i>), your store info and social links, menus and text.</p>
+    </section>
+
+    <section id="product">
+      <h2>Product page</h2>
+      <p>The <b>Product information</b> section is made of blocks you can reorder, hide or remove.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Block</th><th>Shows</th></tr></thead>
+          <tbody>
+            <tr><td>Ritual step</td><td>The routine step, and <i>Morning</i> or <i>Night</i></td></tr>
+            <tr><td>Title, Subtitle, Vendor, Price</td><td>Product name, <code>custom.subtitle</code> (or your own text), the vendor and price</td></tr>
+            <tr><td>Skin types</td><td>The skin types it is best for</td></tr>
+            <tr><td>Variant picker</td><td>Buttons or a dropdown. Options with color or image swatches show as round swatches</td></tr>
+            <tr><td>Buy buttons</td><td>Quantity, add to bag, express checkout buttons and the gift card recipient form</td></tr>
+            <tr><td>How to use, Full ingredients</td><td>Rows that open and close, from the product metafields</td></tr>
+            <tr><td>Description, Collapsible row, Text</td><td>The product description (optionally as a row), extra rows such as shipping and returns, and extra text</td></tr>
+            <tr><td>Pickup availability, Custom Liquid, Apps</td><td>Store pickup, your own code, and app blocks such as reviews</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The key ingredient can show as a tag on the main image. A bar with the add to bag button appears at the bottom of the screen once the main button scrolls away; turn it off in the section settings.</p>
+      <p>Below the main section, the default product template adds:</p>
+      <ul>
+        <li><b>Key ingredients</b> ("What's inside"): each key ingredient with its amount and benefit, linked to its collection, and a link that opens the full ingredient list.</li>
+        <li><b>Ritual</b>, which highlights this product in its ritual.</li>
+        <li><b>How it feels</b>: texture and finish scales, scent, how long it lasts and a short description.</li>
+        <li><b>Product recommendations</b>, twice: complementary products (set in the Search &amp; Discovery app) and related products (chosen by Shopify).</li>
+      </ul>
+    </section>
+
+    <section id="ingredient-pages">
+      <h2>Glossary and pairing guide</h2>
+      <p>Create a page called <i>Ingredients</i> in <span class="path">Online Store › Pages</span> and choose the <code>page.ingredients</code> template. It holds two sections, which you can also add to any other page.</p>
+      <h3>Ingredient glossary</h3>
+      <p>Shows every entry of the ingredient metaobject, A to Z, with its symbol, benefit, what it pairs with, what to avoid it with and when to use it. Shoppers can search, filter by what it does (the <code>concerns</code> field) and jump to a letter. Each card links to the ingredient's collection. Turn on <code>featured</code> on one entry to highlight its card, with a label such as <i>Of the month</i>. A box at the end can link to the pairing guide.</p>
+      <h3>Pairing guide</h3>
+      <p>Shoppers pick two ingredients and see whether they go well together or are better apart, with a short note and the products of each. Add one <b>Pair</b> block for each pair you want to answer (up to 30). The list of ingredients is built from the pairs, so write each ingredient the same way in every pair. Pairs you have not listed show your <b>Ask us</b> text.</p>
+      <div class="note"><p><b>Good to know.</b> The guide shows only what you write. Keep it general and suggest a patch test for sensitive skin; the note under the answer is there for that.</p></div>
+    </section>
+
+    <section id="quiz">
+      <h2>Skin quiz</h2>
+      <p>Create a page called <i>Find your routine</i> and choose the <code>page.routine</code> template, or add the <b>Skin quiz</b> section to the home page. Shoppers answer three questions:</p>
+      <ol>
+        <li><b>How their skin feels.</b> Add a <b>Skin answer</b> block for each skin type, with the moisturizer for it.</li>
+        <li><b>What they want to improve.</b> Add a <b>Concern answer</b> block for each concern, with the treatment for it.</li>
+        <li><b>How much time they have.</b> A short routine (cleanser, treatment, moisturizer) or a full one that adds toner and sunscreen.</li>
+      </ol>
+      <p>Choose the cleanser, toner and sunscreen in the section settings. The result names the routine, for example <i>Dry skin, focused on dark spots</i>, lists each step with its price and the total, and adds the whole routine to the bag in one click. The result is remembered in the shopper's browser for the next visit; turn that off with <b>Remember the result</b>.</p>
+    </section>
+
+    <section id="collection">
+      <h2>Collections and search</h2>
+      <ul>
+        <li><b>Filters</b> come from the free Search &amp; Discovery app. Product type, skin type tags, price and availability work well. Show them as a column on the left or as drop-downs above the products.</li>
+        <li><b>Ingredient banner.</b> Collections with <code>custom.ingredient</code> show the ingredient's benefit, what it pairs with and when to use it.</li>
+        <li><b>Quick links</b> under the banner, such as categories or ingredients, with the current collection highlighted.</li>
+        <li><b>Promo tiles.</b> Add up to four inside the product grid, on the first page, for example to promote a ritual.</li>
+        <li>Choose products per page, three or four columns on computers (shoppers can switch), and one or two on phones. Cards can show the routine step and a quick add button; products with options link to their page instead.</li>
+        <li><b>Search</b> uses the same cards, filters and sorting. When the search matches a collection, such as an ingredient, that collection shows first as a card. With no results, it shows a menu of links and products from a collection.</li>
+      </ul>
+    </section>
+
+    <section id="cart">
+      <h2>Cart and gift cards</h2>
+      <ul>
+        <li><b>Cart drawer or page.</b> Set in <span class="path">Theme settings › Cart</span>.</li>
+        <li><b>Complete your ritual.</b> Choose the morning and night ritual products in order. The cart marks the steps already in the bag and offers the missing ones, with their step names.</li>
+        <li><b>Free shipping bar.</b> Type the amount, in your store currency, from which shipping is free. The cart shows how much is left. The theme only shows the bar; create the free rate in <span class="path">Settings › Shipping and delivery</span>. Leave it empty to hide it.</li>
+        <li><b>Empty cart.</b> Show a menu of quick links, such as skin types, and products from a collection.</li>
+        <li><b>Order note</b> and express checkout buttons on the cart page.</li>
+        <li><b>Gift cards.</b> Create a gift card product in <span class="path">Products › Gift cards</span>. Customers can send one to a recipient with a message and a delivery date. The gift card page is styled to match the theme.</li>
+      </ul>
+    </section>
+
+    <section id="live">
+      <h2>Live streams</h2>
+      <p>Schedule your next live in <span class="path">Theme settings › Live stream</span>: title, platform (TikTok, Instagram, YouTube or other), link, date (<code>2026-10-15</code>), start time (<code>20:00</code>), duration, and how many days before to announce it. Times use your store's time zone (<span class="path">Settings › General</span>).</p>
+      <ul>
+        <li>The <b>announcement bar</b> shows "Next live" a few days before, and switches to "Live" on its own while you stream.</li>
+        <li>The <b>Live stream</b> section shows the date, a countdown and an "Add to calendar" button before the live, and a "Live" tag while it is on. YouTube lives play right in the store; TikTok and Instagram lives open in their app, because they cannot be embedded.</li>
+      </ul>
+      <p>When the live ends, the store goes back to normal by itself. Update the date for the next one.</p>
+    </section>
+
+    <section id="blog">
+      <h2>Journal</h2>
+      <p>The blog page can feature the newest article large, filter by topic (tags) and show excerpts. Articles show the date and reading time, and share links.</p>
+      <p>To show a product after an article, create a metafield definition for <b>blog posts</b> with the key <code>custom.product</code> and the type <b>Product</b>, then pick the product on each post. Without it, the article shows the product chosen in the section settings.</p>
+    </section>
+
+    <section id="motion">
+      <h2>Motion</h2>
+      <p>Balm moves gently, in a few places. Visitors whose device asks for reduced motion never see animations, and videos and slides do not start on their own for them.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Effect</th><th>Where to change it</th></tr></thead>
+          <tbody>
+            <tr><td>Sections fading in while scrolling, the pulsing live dot</td><td><span class="path">Theme settings › Animations › Enable animations</span></td></tr>
+            <tr><td>Second image or zoom when hovering a product card</td><td><span class="path">Theme settings › Product cards › On hover</span></td></tr>
+            <tr><td>Slides changing on their own</td><td>Slideshow section › <b>Change slides automatically</b></td></tr>
+            <tr><td>Rotating announcements</td><td>Announcement bar section › <b>Rotate announcements</b></td></tr>
+            <tr><td>Videos playing on a loop</td><td>Every video has a pause button. Remove the video to show the still image</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="languages">
+      <h2>Languages</h2>
+      <p>The theme's own text (buttons, labels, messages) comes in English and Spanish. To sell in another language, add it in <span class="path">Settings › Languages</span> and translate your products, collections, ingredient entries and pages with the free <b>Translate &amp; Adapt</b> app. You can also change any theme text in <span class="path">Online Store › Themes › … › Edit default theme content</span>.</p>
+      <p>The header and footer can show a language selector and a country/region selector. Turn them on in each section's settings.</p>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+      <details>
+        <summary>The glossary is empty, or ingredients don't show on my products.</summary>
+        <div><p>Check that the metaobject type is exactly <code>ingredient</code>, that <b>Storefronts</b> access is on in its definition, that the field keys match the table in <a href="#metafields">Ingredients and metafields</a> and that each entry has a name. For products, check that <code>custom.key_ingredients</code> is a list of ingredient metaobjects.</p></div>
+      </details>
+      <details>
+        <summary>Do I have to fill in every metafield?</summary>
+        <div><p>No. Every field is optional, and the parts that need one stay hidden. Start with <code>custom.key_ingredient</code>, <code>custom.routine_step</code> and <code>custom.key_ingredients</code>: they make the biggest difference.</p></div>
+      </details>
+      <details>
+        <summary>The ritual shows "Step 1", "Step 2" instead of my step names.</summary>
+        <div><p>Fill in <code>custom.routine_step</code> on each product, for example <i>Step 1 · Cleanse</i>. Without it, Balm numbers the steps in the order you chose them.</p></div>
+      </details>
+      <details>
+        <summary>Can I sell makeup, body or hair products?</summary>
+        <div><p>Yes. Products without skincare metafields work as regular products. You can skip the ritual and quiz sections, or use them for any step-by-step routine.</p></div>
+      </details>
+      <details>
+        <summary>How do I show a different set of sections for one product?</summary>
+        <div><p>Create a new product template in the theme editor (<span class="path">Product › Create template</span>), change it, and assign it to that product in the admin.</p></div>
+      </details>
+      <details>
+        <summary>The free shipping bar says one thing and checkout charges shipping.</summary>
+        <div><p>The bar is only a reminder. The real rule lives in <span class="path">Settings › Shipping and delivery</span>. Make the amount in the theme match your free shipping rate.</p></div>
+      </details>
+      <details>
+        <summary>My video doesn't play.</summary>
+        <div><p>Upload the video file to Shopify (in the section's video setting, or in <span class="path">Content › Files</span>). Videos play muted, and only while they are on screen. On phones in low power mode, the browser may show the cover image until the shopper taps play.</p></div>
+      </details>
+      <details>
+        <summary>Will updates erase my changes?</summary>
+        <div><p>Theme updates keep your settings and content. Changes made directly in the code are not carried over, so keep a copy of anything you edit by hand.</p></div>
+      </details>
+    </section>
+
+    <section id="support">
+      <h2>Support</h2>
+      <p>We help with setting up Balm, using its settings and sections, and anything that does not work as described in this guide. We reply within <b>2 business days</b>, Monday to Friday (Uruguay time, UTC−3).</p>
+      <div class="contact">
+        <span class="contact__label">Support form</span>
+        <p class="contact__text">Choose <b>Balm</b> as the theme and send your question with a screenshot. You get a copy of your request by email right away.</p>
+        <a class="contact__button" href="https://forms.gle/1e15eYXWFWX7cWSM8" target="_blank" rel="noopener">Open the support form</a>
+        <span class="contact__alt">Can't use the form? Email <a href="mailto:tihago@alaskadigital.uy">tihago@alaskadigital.uy</a></span>
+      </div>
+      <p>To help us answer quickly, include:</p>
+      <ul>
+        <li>Your store address (<code>your-store.myshopify.com</code>)</li>
+        <li>The page and section where the problem happens</li>
+        <li>A screenshot or short screen recording</li>
+        <li>If the store is password protected, a preview link to the theme</li>
+      </ul>
+      <p>Support does not cover custom code changes, third-party apps, or design work beyond the theme settings. We can point you in the right direction for those.</p>
+    </section>
+
+    <section id="releases">
+      <h2>Release notes</h2>
+      <div class="release">
+        <div><div class="release__v">1.0.0</div><div class="release__date">First release</div></div>
+        <ul>
+          <li>Ingredient metaobject: key ingredients with amounts on product pages, ingredient tags on cards, ingredient collections.</li>
+          <li>Ingredient glossary with search, filters and a featured ingredient; pairing guide.</li>
+          <li>Morning and night rituals on the home page, product pages and in the cart; skin quiz that adds a full routine to the bag.</li>
+          <li>Skin type picker, shoppable videos, before and after slider, real results with a skin type filter.</li>
+          <li>Live streams for TikTok, Instagram and YouTube, in the announcement bar and the Live stream section.</li>
+          <li>How it feels: texture and finish scales on product pages.</li>
+          <li>English and Spanish theme text.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>Balm is a Shopify theme by Alaska Digital. Shopify and the Shopify Theme Store are trademarks of Shopify Inc.</footer>
+  </main>
+</div>
+
+</body>
+</html>
